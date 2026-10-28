@@ -30,6 +30,15 @@ export default function App() {
           >
             Assistant
           </button>
+          <a
+            href="http://localhost:8787/eval"
+            target="_blank"
+            rel="noreferrer"
+            className="app-nav-eval"
+            title="Open /eval benchmark dashboard"
+          >
+            /eval ↗
+          </a>
         </nav>
       </header>
 
@@ -111,6 +120,23 @@ const css = `
 .app-nav button.on {
   background: var(--ink);
   color: var(--paper);
+}
+
+.app-nav-eval {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #2563eb;
+  text-decoration: none;
+  background: rgba(37, 99, 235, 0.08);
+  transition: all 0.2s;
+}
+
+.app-nav-eval:hover {
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .app-body {

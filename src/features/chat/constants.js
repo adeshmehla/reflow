@@ -1,8 +1,9 @@
 /* ---------- model registry ---------- */
 export const MODEL_LABELS = {
-  "llama-3.3-70b-versatile": "Llama 3.3 70B",
-  "meta-llama/llama-4-scout-17b-16e-instruct": "Llama 4 Scout",
-  "openai/gpt-oss-20b": "Fast GPT OSS",
+  "openai/gpt-oss-20b":  "GPT-OSS 20B (Fast)",
+  "openai/gpt-oss-120b": "GPT-OSS 120B (Powerful)",
+  "qwen/qwen3.8-27b":    "Qwen 3.8 27B (Balanced)",
+  "allam-2-7b":          "ALLaM 2 7B (Cheap)",
 };
 
 export const FALLBACK_MODELS = Object.entries(MODEL_LABELS).map(([value, label]) => ({ value, label }));
@@ -22,7 +23,7 @@ export const STARTERS = [
 ];
 
 export const DEFAULTS = {
-  model: "llama-3.3-70b-versatile",
+  model: "qwen/qwen3.8-27b",
   temperature: 0.7,
   maxTokens: 900,
   instructions: "",
