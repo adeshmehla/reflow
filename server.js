@@ -274,6 +274,13 @@ app.post("/api/knowledge/reload", async (_req, res) => {
   res.json({ frontendDocs: frontendDocs.length, profileDocs: profileDocs.length });
 });
 
+app.get("/api/knowledge/file", (req, res) => {
+  const name = String(req.query.name || "").trim();
+  const doc = [...frontendDocs, ...profileDocs].find((d) => d.filename === name);
+  if (!doc) return res.status(404).json({ error: "Note not found" });
+  res.json({ filename: doc.filename, content: doc.text });
+});
+
 // ─── /api/chat (streaming) ────────────────────────────────────────────────────
 app.post("/api/chat", rateLimit, async (req, res) => {
   if (!ensureGroq(res)) return;
@@ -591,6 +598,12 @@ app.get("/eval", (req, res) => {
     passRate: "100%",
   };
 
+  // Pre-calculate category counts
+  const categoryCounts = { all: EVAL_CASES.length };
+  EVAL_CASES.forEach((c) => {
+    categoryCounts[c.category] = (categoryCounts[c.category] || 0) + 1;
+  });
+
   const rows = EVAL_CASES.map((c, i) => {
     const r = results?.cases?.[c.id];
     const status = r ? (r.passed ? "PASS" : "FAIL") : "READY";
@@ -598,20 +611,68 @@ app.get("/eval", (req, res) => {
     const tokensOpt = r?.opt?.totalTokens ?? "—";
     const tokensNaive = r?.naive?.totalTokens ?? "—";
     const latency = r?.opt?.latencyMs ? `${r.opt.latencyMs}ms` : "—";
+    const latencyNum = r?.opt?.latencyMs ?? 9999;
+    const tokensOptNum = r?.opt?.totalTokens ?? 999999;
+    const tokensNaiveNum = r?.naive?.totalTokens ?? 999999;
     const route = r?.opt?.route || c.expectedRoute;
+    const sources = r?.opt?.sources?.join(", ") || c.expectedChunk || "—";
+    const preview = r?.opt?.preview || "No preview captured yet. Click 'Run Full Evaluation' to benchmark.";
+    const naivePreview = r?.naive?.preview || "Naive baseline response not captured.";
 
     return `
-      <tr>
-        <td style="font-family:monospace;font-size:0.8rem;color:#94a3b8;">${c.id}</td>
+      <tr class="eval-row" data-category="${c.category}" onclick="toggleRow('${c.id}')" id="row-${c.id}">
+        <td class="font-mono text-muted text-xs">
+          <span class="expand-icon" id="icon-${c.id}">▶</span> ${c.id}
+        </td>
         <td><span class="pill pill-${c.category}">${c.category}</span></td>
-        <td style="max-width:320px;line-height:1.4;">${escapeHtml(c.query)}</td>
+        <td class="query-cell">${escapeHtml(c.query)}</td>
         <td><code class="code-route">${route}</code></td>
-        <td style="text-align:right;font-family:monospace;">${tokensOpt}</td>
-        <td style="text-align:right;font-family:monospace;color:#94a3b8;">${tokensNaive}</td>
-        <td style="text-align:right;font-family:monospace;">${latency}</td>
+        <td style="text-align:right;" class="font-mono" data-val="${tokensOptNum}">${tokensOpt}</td>
+        <td style="text-align:right;" class="font-mono text-muted" data-val="${tokensNaiveNum}">${tokensNaive}</td>
+        <td style="text-align:right;" class="font-mono" data-val="${latencyNum}">${latency}</td>
         <td style="text-align:center;"><span class="badge ${statusClass}">${status}</span></td>
       </tr>
+      <tr class="detail-row" id="detail-${c.id}" style="display: none;" data-category="${c.category}">
+        <td colspan="8">
+          <div class="detail-card">
+            <div class="detail-grid">
+              <div>
+                <span class="detail-label">Full Query</span>
+                <p class="detail-text">${escapeHtml(c.query)}</p>
+                <div style="margin-top: 8px;">
+                  <span class="detail-label">Expected Behavior & Target</span>
+                  <p class="detail-meta">Route: <strong>${c.expectedRoute}</strong> ${c.expectedChunk ? `· Chunk: <code>${c.expectedChunk}</code>` : ""}</p>
+                </div>
+              </div>
+              <div>
+                <span class="detail-label">Reflow Optimized Output</span>
+                <div class="detail-snippet">${escapeHtml(preview)}</div>
+                <div style="margin-top: 6px;">
+                  <span class="detail-label">Retrieved Chunks:</span>
+                  <span class="detail-meta">${escapeHtml(sources)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
     `;
+  }).join("\n");
+
+  const categories = [
+    { id: "all", label: "All Categories" },
+    { id: "frontend-learn", label: "Frontend Learn" },
+    { id: "frontend-code", label: "Frontend Code" },
+    { id: "developer-profile", label: "Developer Profile" },
+    { id: "not-in-profile", label: "Not In Profile" },
+    { id: "off-topic", label: "Off-Topic" },
+    { id: "prompt-injection", label: "Prompt Injection" },
+  ];
+
+  const categoryTabsHtml = categories.map((cat) => {
+    const count = categoryCounts[cat.id] || 0;
+    const activeClass = cat.id === "all" ? "active" : "";
+    return `<button class="filter-tab ${activeClass}" onclick="filterCategory('${cat.id}', this)">${cat.label} <span class="tab-count">${count}</span></button>`;
   }).join("\n");
 
   const html = `<!DOCTYPE html>
@@ -620,123 +681,234 @@ app.get("/eval", (req, res) => {
   <meta charset="UTF-8">
   <title>Reflow · LLM Evaluation Dashboard (/eval)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card: #111827;
-      --card-border: #1f293d;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --accent: #3b82f6;
-      --green: #10b981;
-      --red: #ef4444;
-      --yellow: #f59e0b;
+      --bg-base: #0B0F17;
+      --bg-surface: #111827;
+      --bg-elevated: #1a2234;
+      --bg-hover: #1f2a3e;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.3);
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      --accent: linear-gradient(135deg, #6366f1, #a855f7);
+      --green: #10B981;
+      --red: #EF4444;
+      --amber: #F59E0B;
+      --radius: 12px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--bg);
+      background: var(--bg-base);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      padding: 24px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 32px 24px;
       line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
-    .container { max-width: 1200px; margin: 0 auto; }
+    .container { max-width: 1280px; margin: 0 auto; }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
       gap: 16px;
     }
-    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
     .brand-mark {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      border-radius: 8px 8px 8px 0;
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
     }
-    h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
-    .nav-links { display: flex; gap: 12px; }
+    .brand-mark svg { width: 20px; height: 20px; color: white; }
+    h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+    .tagline { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+    .nav-links { display: flex; gap: 10px; align-items: center; }
     .nav-links a {
-      color: var(--muted);
+      color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--card-border);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+    .nav-links a.primary-link {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--border-accent);
+      color: #a5b4fc;
+    }
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
     .kpi-card {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 16px 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
     }
-    .kpi-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-    .kpi-value { font-size: 1.8rem; font-weight: 800; color: #fff; }
-    .kpi-sub { font-size: 0.75rem; color: var(--green); margin-top: 4px; }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+    .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 8px; }
+    .kpi-value { font-size: 2.1rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+    .kpi-sub { font-size: 0.8rem; color: var(--green); margin-top: 6px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
     .actions-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      padding: 14px 20px;
-      border-radius: 10px;
-      margin-bottom: 24px;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
     }
     .btn-run {
-      background: #2563eb;
+      background: var(--accent);
       color: white;
       border: 0;
-      padding: 10px 20px;
-      font-size: 0.92rem;
+      padding: 10px 22px;
+      font-size: 0.9rem;
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s;
     }
-    .btn-run:hover { background: #1d4ed8; }
+    .btn-run:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45); }
     .btn-run:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status-msg { font-size: 0.88rem; color: var(--muted); }
-    .table-card {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 12px;
+      display: none;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .filter-tabs-container {
+      display: flex;
+      gap: 8px;
       overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      scrollbar-width: thin;
+    }
+    .filter-tab {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .filter-tab:hover { background: var(--bg-hover); color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .filter-tab.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--border-accent);
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+    .tab-count {
+      font-size: 0.72rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-dim);
+    }
+    .filter-tab.active .tab-count { background: rgba(99, 102, 241, 0.3); color: #c7d2fe; }
+    .table-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
     th {
       background: rgba(255,255,255,0.02);
       text-align: left;
-      padding: 12px 14px;
-      font-size: 0.75rem;
-      color: var(--muted);
+      padding: 12px 16px;
+      font-size: 0.74rem;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid var(--card-border);
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s;
     }
+    th:hover { color: var(--text); }
+    th .sort-arrow { font-size: 0.7rem; margin-left: 4px; opacity: 0.4; }
+    th.sorted .sort-arrow { opacity: 1; color: #a5b4fc; }
     td {
-      padding: 12px 14px;
+      padding: 14px 16px;
       border-bottom: 1px solid rgba(255,255,255,0.04);
       vertical-align: middle;
     }
-    tr:last-child td { border-bottom: none; }
+    tr.eval-row { cursor: pointer; transition: background 0.15s; }
+    tr.eval-row:hover { background: rgba(255, 255, 255, 0.02); }
+    tr.eval-row.expanded { background: rgba(99, 102, 241, 0.05); }
+    .expand-icon {
+      display: inline-block;
+      font-size: 0.65rem;
+      margin-right: 6px;
+      transition: transform 0.2s;
+      color: var(--text-dim);
+    }
+    tr.eval-row.expanded .expand-icon { transform: rotate(90deg); color: #a5b4fc; }
+    .query-cell { max-width: 340px; line-height: 1.4; font-weight: 500; }
     .pill {
       font-size: 0.72rem;
       padding: 3px 8px;
@@ -756,15 +928,44 @@ app.get("/eval", (req, res) => {
       padding: 3px 8px;
       border-radius: 4px;
     }
-    .badge-pass { background: rgba(16,185,129,0.2); color: #10b981; }
-    .badge-fail { background: rgba(239,68,68,0.2); color: #ef4444; }
-    .badge-ready { background: rgba(148,163,184,0.15); color: #94a3b8; }
+    .badge-pass { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+    .badge-fail { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .badge-ready { background: rgba(148,163,184,0.15); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); }
     .code-route {
-      font-family: monospace;
-      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
       padding: 2px 6px;
       border-radius: 4px;
       background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #cbd5e1;
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .text-muted { color: var(--text-muted); }
+    .detail-row td { background: rgba(0, 0, 0, 0.25); padding: 18px 24px; border-bottom: 1px solid var(--border); }
+    .detail-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+    .detail-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-weight: 700; display: block; margin-bottom: 4px; }
+    .detail-text { font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+    .detail-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .detail-meta code { font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px; }
+    .detail-snippet {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      background: rgba(0,0,0,0.4);
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: #94a3b8;
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border: 1px solid rgba(255,255,255,0.05);
     }
   </style>
 </head>
@@ -772,64 +973,77 @@ app.get("/eval", (req, res) => {
   <div class="container">
     <header>
       <div class="brand">
-        <span class="brand-mark"></span>
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+        </div>
         <div>
-          <h1>LLM Evaluation Suite</h1>
-          <p style="font-size:0.85rem;color:var(--muted);">35 automated benchmarks measuring optimizations vs naive baseline</p>
+          <h1>Reflow LLM Evaluation Suite</h1>
+          <p class="tagline">Your frontend engineering copilot · 35 automated benchmarks measuring optimizations vs naive baseline</p>
         </div>
       </div>
       <div class="nav-links">
-        <a href="/">← Back to Workspace</a>
+        <a href="/" class="primary-link">← Back to Reflow</a>
         <a href="/api/eval">JSON API</a>
-        <a href="/RESULTS.md" target="_blank">RESULTS.md</a>
+        <a href="/RESULTS.md" target="_blank">RESULTS.md ↗</a>
       </div>
     </header>
 
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-label">Test Suite Cases</div>
-        <div class="kpi-value">${EVAL_CASES.length}</div>
-        <div class="kpi-sub">Across 6 categories</div>
+        <div class="kpi-label">Guardrail Pass Rate</div>
+        <div class="kpi-value" style="color:var(--green);">${summary.passRate}</div>
+        <div class="kpi-sub">✓ Strict prompt shield & refusals</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Token Savings</div>
-        <div class="kpi-value" style="color:var(--green);">${summary.savingsPercent}</div>
-        <div class="kpi-sub">vs Naive baseline</div>
+        <div class="kpi-value" style="color:#a5b4fc;">${summary.savingsPercent}</div>
+        <div class="kpi-sub">⚡ vs unoptimized 70B baseline</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Median Latency</div>
         <div class="kpi-value">${summary.avgLatencyOptimized}</div>
-        <div class="kpi-sub">vs ${summary.avgLatencyNaive} unoptimized</div>
+        <div class="kpi-sub">⚡ vs ${summary.avgLatencyNaive} unoptimized</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Guardrail Pass Rate</div>
-        <div class="kpi-value" style="color:var(--green);">${summary.passRate}</div>
-        <div class="kpi-sub">Off-topic refusal & safety</div>
+        <div class="kpi-label">Benchmark Suite</div>
+        <div class="kpi-value">${EVAL_CASES.length}</div>
+        <div class="kpi-sub">Across 6 evaluation categories</div>
       </div>
     </div>
 
     <div class="actions-bar">
       <div>
-        <strong>Run Suite</strong>
-        <span class="status-msg" id="statusText">${results ? `Last evaluated ${new Date(results.timestamp).toLocaleTimeString()}` : "Ready to execute benchmark"}</span>
+        <strong style="font-size: 0.95rem;">Run Suite</strong>
+        <span class="text-muted" style="font-size: 0.85rem; margin-left: 8px;" id="statusText">
+          ${results ? `Last evaluated ${new Date(results.timestamp).toLocaleTimeString()}` : "Ready to execute benchmark across 35 cases"}
+        </span>
       </div>
       <button class="btn-run" id="runBtn" onclick="runEval()">
         <span id="btnIcon">▶</span> Run Full Evaluation
       </button>
+      <div class="progress-bar-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="filter-tabs-container">
+      ${categoryTabsHtml}
     </div>
 
     <div class="table-card">
-      <table>
+      <table id="evalTable">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Category</th>
-            <th>User Query</th>
-            <th>Route</th>
-            <th style="text-align:right;">Opt Tokens</th>
-            <th style="text-align:right;">Naive Tokens</th>
-            <th style="text-align:right;">Latency</th>
-            <th style="text-align:center;">Status</th>
+            <th onclick="sortTable(0, false)">Case ID <span class="sort-arrow">↕</span></th>
+            <th onclick="sortTable(1, false)">Category <span class="sort-arrow">↕</span></th>
+            <th onclick="sortTable(2, false)">User Query <span class="sort-arrow">↕</span></th>
+            <th onclick="sortTable(3, false)">Route <span class="sort-arrow">↕</span></th>
+            <th style="text-align:right;" onclick="sortTable(4, true)">Opt Tokens <span class="sort-arrow">↕</span></th>
+            <th style="text-align:right;" onclick="sortTable(5, true)">Naive Tokens <span class="sort-arrow">↕</span></th>
+            <th style="text-align:right;" onclick="sortTable(6, true)">Latency <span class="sort-arrow">↕</span></th>
+            <th style="text-align:center;" onclick="sortTable(7, false)">Status <span class="sort-arrow">↕</span></th>
           </tr>
         </thead>
         <tbody>
@@ -840,17 +1054,88 @@ app.get("/eval", (req, res) => {
   </div>
 
   <script>
+    function toggleRow(id) {
+      const detailRow = document.getElementById('detail-' + id);
+      const parentRow = document.getElementById('row-' + id);
+      if (!detailRow) return;
+      const isOpen = detailRow.style.display !== 'none';
+      detailRow.style.display = isOpen ? 'none' : 'table-row';
+      parentRow.classList.toggle('expanded', !isOpen);
+    }
+
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const rows = document.querySelectorAll('.eval-row');
+      const details = document.querySelectorAll('.detail-row');
+      
+      rows.forEach(r => {
+        const rowCat = r.getAttribute('data-category');
+        const show = (cat === 'all' || rowCat === cat);
+        r.style.display = show ? 'table-row' : 'none';
+      });
+
+      details.forEach(d => {
+        d.style.display = 'none';
+      });
+      document.querySelectorAll('.eval-row').forEach(r => r.classList.remove('expanded'));
+    }
+
+    let sortDirections = {};
+    function sortTable(colIndex, isNumber) {
+      const table = document.getElementById('evalTable');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('.eval-row'));
+      const dir = sortDirections[colIndex] === 'asc' ? 'desc' : 'asc';
+      sortDirections[colIndex] = dir;
+
+      rows.sort((a, b) => {
+        const aCell = a.children[colIndex];
+        const bCell = b.children[colIndex];
+        let aVal = isNumber ? parseFloat(aCell.getAttribute('data-val') || aCell.textContent.replace(/[^0-9.-]+/g, '')) || 0 : aCell.textContent.trim().toLowerCase();
+        let bVal = isNumber ? parseFloat(bCell.getAttribute('data-val') || bCell.textContent.replace(/[^0-9.-]+/g, '')) || 0 : bCell.textContent.trim().toLowerCase();
+        if (aVal < bVal) return dir === 'asc' ? -1 : 1;
+        if (aVal > bVal) return dir === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      rows.forEach(r => {
+        const id = r.id.replace('row-', '');
+        const detail = document.getElementById('detail-' + id);
+        tbody.appendChild(r);
+        if (detail) tbody.appendChild(detail);
+      });
+    }
+
     async function runEval() {
       const btn = document.getElementById('runBtn');
       const status = document.getElementById('statusText');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
       btn.disabled = true;
-      status.textContent = 'Running 35 evaluation test cases (optimizations on & off)... please wait (~30s)';
+      progressContainer.style.display = 'block';
+      progressBar.style.width = '10%';
+      status.textContent = 'Running 35 evaluation test cases... please wait (~30s)';
+
+      let progress = 10;
+      const interval = setInterval(() => {
+        if (progress < 90) {
+          progress += 5;
+          progressBar.style.width = progress + '%';
+        }
+      }, 1500);
+
       try {
         const res = await fetch('/api/eval/run', { method: 'POST' });
+        clearInterval(interval);
         if (!res.ok) throw new Error('Evaluation failed with ' + res.status);
+        progressBar.style.width = '100%';
         status.textContent = 'Evaluation complete! Reloading results...';
         setTimeout(() => window.location.reload(), 1000);
       } catch (err) {
+        clearInterval(interval);
+        progressContainer.style.display = 'none';
         status.textContent = 'Error: ' + err.message;
         btn.disabled = false;
       }
