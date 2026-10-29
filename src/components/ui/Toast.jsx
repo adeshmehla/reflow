@@ -36,12 +36,12 @@ export function ToastProvider({ children }) {
           const icons = {
             success: <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />,
             error: <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />,
-            info: <Info className="w-4 h-4 text-indigo-400 shrink-0" />,
+            info: <Info className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />,
           };
           const borders = {
             success: "border-emerald-500/30 bg-[var(--bg-elevated)]",
             error: "border-rose-500/30 bg-[var(--bg-elevated)]",
-            info: "border-indigo-500/30 bg-[var(--bg-elevated)]",
+            info: "border-[var(--border-medium)] bg-[var(--bg-elevated)]",
           };
 
           return (

@@ -24,12 +24,12 @@ export function Button({
   };
 
   const variants = {
-    primary: "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-sm hover:brightness-110 shadow-[var(--shadow-glow)] border border-indigo-400/30",
+    primary: "bg-[var(--text-primary)] text-[var(--bg-base)] hover:opacity-90 font-medium shadow-xs border border-transparent",
     secondary: "bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--border-subtle)] hover:border-[var(--border-medium)]",
     ghost: "bg-transparent hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]",
     outline: "bg-transparent border border-[var(--border-medium)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)]",
     danger: "bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20",
-    accent: "bg-[var(--accent-subtle)] hover:bg-[var(--accent-glow)] text-indigo-400 border border-[var(--accent-border)]",
+    accent: "bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--border-medium)]",
   };
 
   return (

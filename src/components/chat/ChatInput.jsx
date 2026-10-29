@@ -81,7 +81,7 @@ export function ChatInput({
           <button
             type="button"
             onClick={onJumpLatest}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-indigo-400 border border-indigo-500/30 shadow-lg backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--border-medium)] shadow-md backdrop-blur-md transition-all duration-150 cursor-pointer"
           >
             <ArrowDown className="w-3.5 h-3.5" />
             <span>Jump to latest</span>
@@ -90,7 +90,7 @@ export function ChatInput({
       )}
 
       {/* Composer Container */}
-      <div className="relative rounded-[var(--radius-xl)] bg-[var(--bg-surface)] border border-[var(--border-medium)] shadow-xl focus-within:border-indigo-500/70 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all duration-200 overflow-hidden">
+      <div className="relative rounded-[var(--radius-xl)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] focus-within:border-[var(--border-strong)] shadow-sm transition-colors duration-150 overflow-hidden">
         <textarea
           ref={inputRef}
           value={draft}
@@ -117,10 +117,10 @@ export function ChatInput({
                 }`}
                 aria-label="Toggle voice input"
               >
-                {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-[var(--text-secondary)]" />}
               </button>
             </Tooltip>
-            <span className="hidden sm:inline text-[11px]">
+            <span className="hidden sm:inline text-[11px] text-[var(--text-muted)]">
               {listening ? "Listening..." : "Enter to send, Shift+Enter for newline"}
             </span>
           </div>
@@ -131,7 +131,7 @@ export function ChatInput({
               <button
                 type="button"
                 onClick={onStop}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30 transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30 transition-all cursor-pointer shadow-sm"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
                 <span>Stop</span>
@@ -141,7 +141,7 @@ export function ChatInput({
                 type="button"
                 onClick={() => onSend()}
                 disabled={!draft.trim() || disabled}
-                className="flex items-center justify-center p-2 rounded-[var(--radius-md)] bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-sm hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--text-primary)] text-[var(--bg-base)] disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-90 transition-all cursor-pointer"
                 aria-label="Send message"
               >
                 <Send className="w-4 h-4" />

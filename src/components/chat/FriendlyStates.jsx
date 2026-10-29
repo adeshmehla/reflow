@@ -31,9 +31,9 @@ export function OffTopicRefusalCard({ onSelectPrompt }) {
             <button
               key={s}
               onClick={() => onSelectPrompt && onSelectPrompt(s)}
-              className="text-xs px-3 py-2 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-indigo-400 border border-[var(--border-subtle)] transition-colors cursor-pointer text-left flex items-center gap-2"
+              className="text-xs px-3 py-2 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors cursor-pointer text-left flex items-center gap-2"
             >
-              <Sparkles className="w-3 h-3 shrink-0 text-indigo-400" />
+              <Sparkles className="w-3 h-3 shrink-0 text-[var(--text-muted)]" />
               <span>{s}</span>
             </button>
           ))}
@@ -45,9 +45,9 @@ export function OffTopicRefusalCard({ onSelectPrompt }) {
 
 export function ColdStartNotice({ onRetry }) {
   return (
-    <div className="p-4 rounded-[var(--radius-md)] border border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 via-[var(--bg-elevated)] to-violet-500/10 text-[var(--text-primary)] flex items-center justify-between gap-4">
+    <div className="p-4 rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--bg-elevated)] text-[var(--text-primary)] flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 animate-spin">
+        <div className="w-8 h-8 rounded-full bg-[var(--bg-surface)] text-[var(--text-secondary)] flex items-center justify-center shrink-0 animate-spin">
           <RefreshCw className="w-4 h-4" />
         </div>
         <div>
@@ -62,7 +62,7 @@ export function ColdStartNotice({ onRetry }) {
       {onRetry && (
         <button
           onClick={onRetry}
-          className="text-xs px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--bg-hover)] hover:bg-[var(--bg-active)] text-indigo-400 border border-indigo-500/30 transition-colors cursor-pointer shrink-0 font-medium"
+          className="text-xs px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--bg-hover)] hover:bg-[var(--bg-active)] text-[var(--text-primary)] border border-[var(--border-medium)] transition-colors cursor-pointer shrink-0 font-medium"
         >
           Check Again
         </button>

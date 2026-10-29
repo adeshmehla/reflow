@@ -75,7 +75,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex h-full w-full bg-[var(--bg-base)] text-[var(--text-primary)] overflow-hidden font-sans">
+    <div className="app-shell text-[var(--text-primary)]">
       {/* ── Left Sidebar ── */}
       <Sidebar
         isOpen={sideOpen}
@@ -94,7 +94,7 @@ export default function Chat() {
       />
 
       {/* ── Main Chat Area ── */}
-      <main className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[var(--bg-base)]">
+      <main className="app-main relative">
         {/* Slim Unified Header */}
         <ChatHeader
           title={active?.title}

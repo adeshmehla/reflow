@@ -16,14 +16,14 @@ export function Badge({
 
   const variants = {
     default: "bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-subtle)]",
-    learn: "bg-blue-500/10 text-blue-400 border border-blue-500/30",
+    learn: "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border border-[var(--border-subtle)]",
     profile: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30",
     off_topic: "bg-rose-500/10 text-rose-400 border border-rose-500/30",
     success: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30",
     warning: "bg-amber-500/10 text-amber-400 border border-amber-500/30",
     danger: "bg-rose-500/10 text-rose-400 border border-rose-500/30",
-    accent: "bg-[var(--accent-subtle)] text-indigo-400 border border-[var(--accent-border)]",
-    info: "bg-sky-500/10 text-sky-400 border border-sky-500/30",
+    accent: "bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-medium)]",
+    info: "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border border-[var(--border-subtle)]",
   };
 
   return (

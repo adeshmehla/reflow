@@ -39,7 +39,7 @@ function Inline({ text }) {
       return (
         <code
           key={i}
-          className="px-1.5 py-0.5 text-xs font-mono rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-indigo-300 font-medium"
+          className="px-1.5 py-0.5 text-xs font-mono rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium"
         >
           {p.slice(1, -1)}
         </code>
@@ -60,7 +60,7 @@ function Inline({ text }) {
           href={m[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-indigo-400 hover:text-indigo-300 underline underline-offset-2 decoration-indigo-400/40 hover:decoration-indigo-300 transition-colors"
+          className="text-[var(--text-primary)] underline underline-offset-2 decoration-[var(--border-strong)] hover:opacity-80 transition-opacity"
         >
           {m[1]}
         </a>
@@ -96,11 +96,11 @@ function Blocks({ text }) {
       out.push(
         <div
           key={`quote-${i}`}
-          className="my-3 p-3.5 rounded-[var(--radius-md)] border-l-4 border-indigo-500 bg-indigo-500/10 text-xs text-[var(--text-secondary)] flex items-start gap-2.5"
+          className="my-3 p-3.5 rounded-[var(--radius-md)] border-l-2 border-[var(--border-strong)] bg-[var(--bg-elevated)] text-xs text-[var(--text-secondary)] flex items-start gap-2.5"
         >
-          <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+          <Info className="w-4 h-4 text-[var(--text-muted)] shrink-0 mt-0.5" />
           <div className="space-y-1 leading-relaxed">
-            <span className="font-semibold text-indigo-300 block text-xs">Key Takeaway</span>
+            <span className="font-medium text-[var(--text-primary)] block text-xs">Note</span>
             <Inline text={quoteLines.join(" ")} />
           </div>
         </div>

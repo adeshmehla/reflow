@@ -107,7 +107,7 @@ export function CommandPalette({
       >
         {/* Search Input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
-          <Search className="w-4 h-4 text-indigo-400 shrink-0" />
+          <Search className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
           <input
             autoFocus
             type="text"
@@ -137,7 +137,7 @@ export function CommandPalette({
                 className="w-full flex items-center justify-between px-3 py-2 rounded-[var(--radius-sm)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-left"
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className="w-4 h-4 text-indigo-400" />
+                  <Icon className="w-4 h-4 text-[var(--text-muted)]" />
                   <span>{item.label}</span>
                 </div>
                 <span className="text-[10px] text-[var(--text-muted)]">{item.category}</span>

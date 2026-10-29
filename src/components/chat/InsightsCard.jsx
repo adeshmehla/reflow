@@ -46,17 +46,17 @@ export function InsightsCard({ ledger, ms, cacheHit, onCitationClick }) {
         aria-expanded={open}
       >
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="flex items-center gap-1.5 font-semibold text-[var(--text-primary)]">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span className="flex items-center gap-1.5 font-medium text-[var(--text-primary)]">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             How was this answered?
           </span>
           <span className="text-[var(--border-strong)]">·</span>
           {isCache ? (
-            <span className="text-emerald-400 font-semibold flex items-center gap-1">
+            <span className="text-emerald-400 font-medium flex items-center gap-1">
               <Zap className="w-3 h-3" /> Instant Cache Hit (0 tokens)
             </span>
           ) : tokensSaved > 0 ? (
-            <span className="text-indigo-400 font-semibold">
+            <span className="text-emerald-400 font-medium">
               Saved {tokensSaved.toLocaleString()} tokens ({savingsPercent}%)
             </span>
           ) : (
@@ -93,12 +93,12 @@ export function InsightsCard({ ledger, ms, cacheHit, onCitationClick }) {
               </Badge>
             )}
 
-            <Badge variant="accent" size="sm" icon={Cpu}>
+            <Badge variant="default" size="sm" icon={Cpu}>
               {MODEL_LABELS[ledger.mainModel] || ledger.mainModel || "Fast Model"}
             </Badge>
 
             {ledger.retrievedChunks > 0 && (
-              <Badge variant="info" size="sm" icon={Database}>
+              <Badge variant="default" size="sm" icon={Database}>
                 {ledger.retrievedChunks} Chunks Grounded
               </Badge>
             )}
@@ -108,7 +108,7 @@ export function InsightsCard({ ledger, ms, cacheHit, onCitationClick }) {
           <div className="p-3 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] space-y-2">
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-[var(--text-secondary)] font-medium">Token Comparison</span>
-              <span className="text-indigo-400 font-bold">
+              <span className="text-emerald-400 font-semibold">
                 {isCache ? "100% saved (replayed from cache)" : `Saved ${tokensSaved.toLocaleString()} tokens (${savingsPercent}%)`}
               </span>
             </div>
@@ -118,12 +118,12 @@ export function InsightsCard({ ledger, ms, cacheHit, onCitationClick }) {
               {/* Reflow Optimized Bar */}
               <div>
                 <div className="flex justify-between text-[10px] text-[var(--text-muted)] mb-0.5">
-                  <span className="text-indigo-400 font-semibold">Reflow (Optimized)</span>
+                  <span className="text-emerald-400 font-medium">Reflow (Optimized)</span>
                   <span>{grandTotal.toLocaleString()} tokens</span>
                 </div>
                 <div className="h-2 w-full bg-[var(--bg-base)] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full transition-all duration-500"
+                    className="h-full bg-emerald-500 rounded-full transition-all duration-300"
                     style={{
                       width: `${Math.max(4, Math.min(100, (grandTotal / Math.max(naiveTokens, grandTotal)) * 100))}%`,
                     }}
@@ -189,7 +189,7 @@ export function InsightsCard({ ledger, ms, cacheHit, onCitationClick }) {
                   <button
                     key={f}
                     onClick={() => onCitationClick && onCitationClick(f)}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-indigo-400 border border-indigo-500/20 text-[11px] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)] hover:border-[var(--border-medium)] text-[11px] transition-colors cursor-pointer"
                   >
                     <Database className="w-2.5 h-2.5" />
                     <span>{f.replace(/^\d+-/, "").replace(/\.md$/, "").replace(/-/g, " ")}</span>

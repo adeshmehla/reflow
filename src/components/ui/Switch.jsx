@@ -26,8 +26,8 @@ export function Switch({
         aria-checked={checked}
         disabled={disabled}
         onClick={() => !disabled && onChange && onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 ${
-          checked ? "bg-gradient-to-r from-indigo-500 to-violet-600" : "bg-[var(--border-strong)]"
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-strong)] disabled:cursor-not-allowed disabled:opacity-40 ${
+          checked ? "bg-[#10A37F]" : "bg-[var(--border-strong)]"
         }`}
       >
         <span

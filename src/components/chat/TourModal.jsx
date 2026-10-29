@@ -28,21 +28,18 @@ export function TourModal() {
       subtitle: "Your specialized frontend engineering copilot",
       desc: "Reflow is engineered for frontend developers. It knows modern React, TypeScript, Core Web Vitals, CSS architecture, browser rendering, and accessibility with grounding from 30 curated notes.",
       icon: Sparkles,
-      color: "from-indigo-500 to-violet-600",
     },
     {
       title: "Intelligent Routing & Token Savers",
       subtitle: "Save up to 70% tokens on every turn",
       desc: "Our lightweight router automatically classifies your question. Off-topic questions are refused in <400ms without touching the main model, while an in-memory cache returns repeated questions in 0 tokens and <5ms.",
       icon: Zap,
-      color: "from-amber-500 to-orange-600",
     },
     {
       title: "Verified Developer Profile Mode",
       subtitle: "Recruiter-ready technical profile",
       desc: "Switch to Developer Profile mode to ask about Adesh Mehla's verified skills, work at WebToday, commercial projects, and engineering experience with strict anti-hallucination guardrails.",
       icon: Database,
-      color: "from-emerald-500 to-teal-600",
     },
   ];
 
@@ -62,17 +59,17 @@ export function TourModal() {
         </button>
 
         {/* Step Visual */}
-        <div className={`w-12 h-12 rounded-[var(--radius-lg)] bg-gradient-to-tr ${current.color} flex items-center justify-center text-white shadow-lg`}>
+        <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--bg-elevated)] border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-primary)]">
           <Icon className="w-6 h-6" />
         </div>
 
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
               Step {step + 1} of {steps.length}
             </span>
           </div>
-          <h3 className="text-lg font-bold text-[var(--text-primary)]">{current.title}</h3>
+          <h3 className="text-lg font-semibold text-[var(--text-primary)]">{current.title}</h3>
           <p className="text-xs font-medium text-[var(--text-secondary)]">{current.subtitle}</p>
           <p className="text-xs text-[var(--text-muted)] pt-2 leading-relaxed">{current.desc}</p>
         </div>
@@ -83,7 +80,7 @@ export function TourModal() {
             {steps.map((_, i) => (
               <span
                 key={i}
-                className={`h-1.5 rounded-full transition-all duration-200 ${i === step ? "w-6 bg-indigo-500" : "w-1.5 bg-[var(--border-strong)]"
+                className={`h-1.5 rounded-full transition-all duration-200 ${i === step ? "w-6 bg-[var(--text-primary)]" : "w-1.5 bg-[var(--border-strong)]"
                   }`}
               />
             ))}

@@ -56,7 +56,7 @@ export function CitationsDrawer({ filename, isOpen, onClose }) {
       onClose={onClose}
       title={
         <div className="flex items-center gap-2 capitalize">
-          <FileText className="w-4 h-4 text-indigo-400" />
+          <FileText className="w-4 h-4 text-[var(--text-primary)]" />
           <span>{displayName}</span>
         </div>
       }

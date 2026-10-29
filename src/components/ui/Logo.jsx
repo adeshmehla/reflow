@@ -16,7 +16,7 @@ export function Logo({ size = "md", showTagline = false, className = "" }) {
   return (
     <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
       {/* Reflow Logo Mark */}
-      <div className={`relative flex items-center justify-center shrink-0 ${iconSizes[size]} rounded-[var(--radius-md)] bg-gradient-to-br from-indigo-500 to-violet-600 shadow-[var(--shadow-glow)] p-1 text-white`}>
+      <div className={`relative flex items-center justify-center shrink-0 ${iconSizes[size]} rounded-[var(--radius-md)] bg-[var(--text-primary)] text-[var(--bg-base)] p-1.5`}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
           <path d="M12 2v4" />
           <path d="m16.2 7.8 2.9-2.9" />
@@ -31,7 +31,7 @@ export function Logo({ size = "md", showTagline = false, className = "" }) {
       </div>
 
       <div className="flex flex-col">
-        <span className={`bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent ${textSizes[size]}`}>
+        <span className={`text-[var(--text-primary)] ${textSizes[size]}`}>
           Reflow
         </span>
         {showTagline && (

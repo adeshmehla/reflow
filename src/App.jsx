@@ -7,9 +7,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <div className="h-full w-full overflow-hidden bg-[var(--bg-base)] text-[var(--text-primary)]">
-          <Chat />
-        </div>
+        <Chat />
       </ToastProvider>
     </ThemeProvider>
   );

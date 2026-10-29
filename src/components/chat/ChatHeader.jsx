@@ -28,7 +28,7 @@ export function ChatHeader({
       ? "bg-rose-500"
       : budgetRatio > 0.65
       ? "bg-amber-500"
-      : "bg-gradient-to-r from-indigo-500 to-violet-500";
+      : "bg-[var(--text-primary)]";
 
   return (
     <header className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] z-20 gap-3">
@@ -56,9 +56,9 @@ export function ChatHeader({
                 if (e.key === "Escape") setEditing(false);
               }}
               onBlur={handleSave}
-              className="text-sm font-semibold px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-indigo-400 text-[var(--text-primary)] focus:outline-none"
+              className="text-sm font-medium px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-[var(--border-strong)] text-[var(--text-primary)] focus:outline-none"
             />
-            <button onClick={handleSave} className="p-1 text-emerald-400 hover:text-emerald-300 cursor-pointer">
+            <button onClick={handleSave} className="p-1 text-[var(--text-primary)] hover:opacity-80 cursor-pointer">
               <Check className="w-4 h-4" />
             </button>
           </div>
@@ -68,7 +68,7 @@ export function ChatHeader({
               setDraftTitle(title || "Reflow Copilot");
               setEditing(true);
             }}
-            className="group flex items-center gap-1.5 text-sm font-semibold text-[var(--text-primary)] cursor-pointer truncate"
+            className="group flex items-center gap-1.5 text-sm font-medium text-[var(--text-primary)] cursor-pointer truncate"
             title="Click to rename"
           >
             <span className="truncate">{title || "Reflow Copilot"}</span>
@@ -89,8 +89,8 @@ export function ChatHeader({
           content="Reflow saves tokens via our fast classifier router, local BM25 RAG, in-memory caching, and context trimming."
           position="bottom"
         >
-          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-semibold text-indigo-400 cursor-help select-none">
-            <Sparkles className="w-3 h-3 text-indigo-400" />
+          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-secondary)] cursor-help select-none">
+            <Sparkles className="w-3 h-3 text-[var(--text-muted)]" />
             <span>Session savings: {savingsPercent}%</span>
           </div>
         </Tooltip>

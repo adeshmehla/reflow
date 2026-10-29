@@ -9,28 +9,24 @@ export function EmptyState({ onSelectQuestion, onSelectProfile, noServer }) {
       desc: "How browsers construct DOM, CSSOM, and render tree pixels",
       prompt: "Explain the Critical Rendering Path and how HTML parsing gets blocked by script tags.",
       icon: Layers,
-      color: "text-blue-400 bg-blue-500/10 border-blue-500/20",
     },
     {
       title: "useMemo vs useCallback",
       desc: "When to use each, memoization pitfalls, and React render cycles",
       prompt: "Explain useMemo vs useCallback with practical examples of when to use which and common pitfalls.",
       icon: Cpu,
-      color: "text-violet-400 bg-violet-500/10 border-violet-500/20",
     },
     {
       title: "How do I improve Core Web Vitals?",
       desc: "Target thresholds and strategies for LCP, INP, and CLS",
       prompt: "What are Core Web Vitals (LCP, INP, CLS) and what are their good threshold targets and fixes?",
       icon: Zap,
-      color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
     },
     {
       title: "Tell me about Adesh",
       desc: "Skills, WebToday experience, and engineering background",
       prompt: "Who is Adesh Mehla, what are his core technical skills, and what did he build at WebToday?",
       icon: UserCheck,
-      color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
       isProfile: true,
     },
   ];
@@ -42,7 +38,7 @@ export function EmptyState({ onSelectQuestion, onSelectProfile, noServer }) {
         <Logo size="lg" showTagline={false} />
       </div>
 
-      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-2">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">
         What do you want to build or learn today?
       </h1>
 
@@ -65,16 +61,16 @@ export function EmptyState({ onSelectQuestion, onSelectProfile, noServer }) {
                   onSelectQuestion(c.prompt);
                 }
               }}
-              className="group p-4 rounded-[var(--radius-lg)] bg-[var(--bg-card)] hover:bg-[var(--bg-elevated)] border border-[var(--border-subtle)] hover:border-[var(--border-medium)] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between"
+              className="group p-4 rounded-[var(--radius-lg)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] hover:border-[var(--border-medium)] transition-colors duration-150 cursor-pointer shadow-xs flex flex-col justify-between"
             >
               <div className="flex items-start justify-between gap-3 mb-2">
-                <div className={`p-2 rounded-[var(--radius-md)] border ${c.color} shrink-0`}>
+                <div className="p-2 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] shrink-0 transition-colors">
                   <Icon className="w-4 h-4" />
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-indigo-400 transition-colors" />
+                <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-indigo-300 transition-colors">
+                <h3 className="text-sm font-medium text-[var(--text-primary)]">
                   {c.title}
                 </h3>
                 <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2 leading-relaxed">

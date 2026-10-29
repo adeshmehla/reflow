@@ -29,7 +29,7 @@ export function MessageItem({
   if (isUser) {
     return (
       <div className="flex justify-end mb-5 animate-in fade-in slide-in-from-bottom-2 duration-150">
-        <div className="max-w-[85%] sm:max-w-[75%] rounded-[var(--radius-lg)] rounded-tr-sm bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-3 shadow-md text-sm leading-relaxed whitespace-pre-wrap select-text">
+        <div className="max-w-[85%] sm:max-w-[75%] rounded-[var(--radius-xl)] bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-subtle)] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap select-text">
           {message.content}
         </div>
       </div>
@@ -53,7 +53,7 @@ export function MessageItem({
   return (
     <div className="flex gap-3 mb-6 animate-in fade-in slide-in-from-bottom-2 duration-150 group">
       {/* Reflow Avatar */}
-      <div className="shrink-0 w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-sm mt-0.5">
+      <div className="shrink-0 w-8 h-8 rounded-full bg-[var(--bg-elevated)] border border-[var(--border-medium)] flex items-center justify-center text-[var(--text-primary)] mt-0.5">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
           <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity="0.4" />
           <path d="M12 2v4" />
@@ -91,8 +91,8 @@ export function MessageItem({
         {/* Grounded Citation Chips */}
         {message.sources && message.sources.length > 0 && !isGenerating && (
           <div className="mt-3 flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1 mr-1">
-              <FileText className="w-3 h-3 text-indigo-400" />
+            <span className="text-[11px] font-medium text-[var(--text-muted)] flex items-center gap-1 mr-1">
+              <FileText className="w-3 h-3 text-[var(--text-muted)]" />
               Sources:
             </span>
             {message.sources.map((src) => {
@@ -102,10 +102,10 @@ export function MessageItem({
                   key={src}
                   type="button"
                   onClick={() => onCitationClick && onCitationClick(src)}
-                  className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] border border-indigo-500/20 hover:border-indigo-400/40 text-indigo-400 transition-all duration-150 cursor-pointer shadow-xs capitalize"
+                  className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] hover:border-[var(--border-medium)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-150 cursor-pointer shadow-xs capitalize"
                   title={`View grounded note: ${src}`}
                 >
-                  <FileText className="w-3 h-3 shrink-0" />
+                  <FileText className="w-3 h-3 shrink-0 text-[var(--text-muted)]" />
                   <span>{label}</span>
                 </button>
               );

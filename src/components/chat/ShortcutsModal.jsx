@@ -26,7 +26,7 @@ export function ShortcutsModal({ isOpen, onClose }) {
       <div className="relative w-full max-w-md rounded-[var(--radius-lg)] bg-[var(--bg-surface)] border border-[var(--border-medium)] p-6 shadow-2xl z-10 space-y-5 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <Keyboard className="w-5 h-5 text-indigo-400" />
+            <Keyboard className="w-5 h-5 text-[var(--text-primary)]" />
             <h3 className="font-semibold text-base text-[var(--text-primary)]">Keyboard Shortcuts</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer">

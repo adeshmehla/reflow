@@ -47,7 +47,7 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
       onClose={onClose}
       title={
         <div className="flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-indigo-400" />
+          <Sliders className="w-4 h-4 text-[var(--text-primary)]" />
           <span>Reflow Settings</span>
         </div>
       }
@@ -58,10 +58,10 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
         {/* Token Optimizations Group */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
               Token Savers & Optimizations
             </h3>
-            <span className="text-[11px] text-indigo-400 font-medium">Active by default</span>
+            <span className="text-[11px] text-[var(--text-muted)] font-medium">Active by default</span>
           </div>
 
           <div className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] bg-[var(--bg-elevated)]/40 p-3">
@@ -87,12 +87,12 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-[var(--text-secondary)] flex items-center justify-between">
               <span>Primary Answer Model</span>
-              <Cpu className="w-3.5 h-3.5 text-indigo-400" />
+              <Cpu className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             </label>
             <select
               value={settings.model}
               onChange={(e) => setSetting("model", e.target.value)}
-              className="w-full text-xs px-3 py-2.5 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-medium)] text-[var(--text-primary)] focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full text-xs px-3 py-2.5 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-medium)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-strong)] cursor-pointer"
             >
               {models.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -106,7 +106,7 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-[var(--text-secondary)] flex items-center justify-between">
               <span>Max Output Tokens Per Turn</span>
-              <span className="text-indigo-400 font-mono font-bold">{settings.maxTokens} tok</span>
+              <span className="text-[var(--text-primary)] font-mono font-medium">{settings.maxTokens} tok</span>
             </label>
             <div className="grid grid-cols-4 gap-1.5">
               {[300, 600, 900, 1800].map((n) => (
@@ -116,7 +116,7 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
                   onClick={() => setSetting("maxTokens", n)}
                   className={`text-xs py-1.5 rounded-[var(--radius-sm)] font-medium border transition-colors cursor-pointer ${
                     settings.maxTokens === n
-                      ? "bg-indigo-500 text-white border-indigo-400 shadow-sm"
+                      ? "bg-[var(--text-primary)] text-[var(--bg-base)] border-transparent"
                       : "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border-subtle)] hover:bg-[var(--bg-hover)]"
                   }`}
                 >
@@ -147,7 +147,7 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs text-[var(--text-secondary)]">
                   <span>Temperature (Sampling Creativity)</span>
-                  <span className="font-mono text-indigo-400 font-bold">{settings.temperature.toFixed(1)}</span>
+                  <span className="font-mono text-[var(--text-primary)] font-medium">{settings.temperature.toFixed(1)}</span>
                 </div>
                 <input
                   type="range"
@@ -156,7 +156,7 @@ export function SettingsDrawer({ isOpen, onClose, settings, setSetting, models, 
                   step="0.1"
                   value={settings.temperature}
                   onChange={(e) => setSetting("temperature", Number(e.target.value))}
-                  className="w-full accent-indigo-500 cursor-pointer"
+                  className="w-full accent-[var(--text-primary)] cursor-pointer"
                 />
                 <div className="flex justify-between text-[10px] text-[var(--text-muted)]">
                   <span>0.0 (Deterministic / Code)</span>

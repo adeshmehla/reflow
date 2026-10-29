@@ -163,7 +163,7 @@ export function ProfileNotFoundCard({ onSelectPrompt }) {
             <button
               key={s}
               onClick={() => onSelectPrompt && onSelectPrompt(s)}
-              className="text-xs px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-indigo-400 border border-[var(--border-subtle)] transition-colors cursor-pointer text-left"
+              className="text-xs px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors cursor-pointer text-left"
             >
               {s}
             </button>

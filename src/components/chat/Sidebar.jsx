@@ -112,8 +112,8 @@ export function Sidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-72 shrink-0 flex flex-col bg-[var(--bg-surface)] border-r border-[var(--border-subtle)] transition-transform duration-250 ease-out select-none ${
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        className={`app-sidebar select-none transition-transform duration-200 ease-out fixed min-[900px]:static inset-y-0 left-0 z-40 w-[280px] min-[900px]:w-auto ${
+          isOpen ? "translate-x-0" : "-translate-x-full min-[900px]:translate-x-0"
         }`}
       >
         {/* Top Header / Logo */}
@@ -189,9 +189,9 @@ export function Sidebar({
                       return (
                         <div
                           key={c.id}
-                          className={`group relative flex items-center justify-between px-3 py-2 rounded-[var(--radius-md)] transition-all cursor-pointer ${
+                          className={`group relative flex items-center justify-between px-3 py-2 rounded-[var(--radius-md)] transition-colors cursor-pointer ${
                             isActive
-                              ? "bg-gradient-to-r from-indigo-500/15 to-violet-500/15 text-[var(--text-primary)] font-medium border border-indigo-500/25 shadow-sm"
+                              ? "bg-[var(--bg-elevated)] text-[var(--text-primary)] font-medium"
                               : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]"
                           }`}
                           onClick={() => {
@@ -203,7 +203,7 @@ export function Sidebar({
                         >
                           {/* Chat Title or Inline Rename Input */}
                           <div className="flex items-center gap-2.5 truncate mr-2 flex-1">
-                            <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-indigo-400" : "text-[var(--text-muted)]"}`} />
+                            <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}`} />
                             {isEditing ? (
                               <input
                                 ref={renameInputRef}
@@ -217,7 +217,7 @@ export function Sidebar({
                                 }}
                                 onBlur={() => handleSaveRename(c.id)}
                                 onClick={(e) => e.stopPropagation()}
-                                className="w-full bg-[var(--bg-elevated)] border border-indigo-400 rounded px-1.5 py-0.5 text-xs text-[var(--text-primary)] focus:outline-none"
+                                className="w-full bg-[var(--bg-base)] border border-[var(--border-strong)] rounded px-1.5 py-0.5 text-xs text-[var(--text-primary)] focus:outline-none"
                               />
                             ) : (
                               <span className="truncate">{c.title || "Untitled Chat"}</span>
@@ -292,7 +292,7 @@ export function Sidebar({
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium transition-colors"
             >
-              <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
+              <BarChart3 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span>/eval ↗</span>
             </a>
 
@@ -314,7 +314,7 @@ export function Sidebar({
               className="flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
               title="Toggle Dark/Light Mode"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[var(--text-secondary)]" />}
               <span className="capitalize">{theme} Theme</span>
             </button>
 
