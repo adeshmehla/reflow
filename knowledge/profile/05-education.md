@@ -1,13 +1,31 @@
-# Education & Certifications
+# Education & Learning — Adesh Mehla
 
-## [Degree] in [Subject]
-**Institution:** [University Name]
-**Year:** [Graduation year]
-**Notable:** [Thesis topic, honours, GPA if strong]
+## Formal Higher Education
+- **Degree:** Three-Year Bachelor's Degree — Bachelor of Arts (BA)
+- **Institution / University:** Unverified in current profile records *(specific college or university name is not formally documented)*
+- **Graduation Year:** Unverified in current profile records
+- **Academic Marks / GPA:** Unverified in current profile records
 
-## Certifications
-- [e.g. AWS Certified Developer – Associate, 2023]
-- [e.g. Google Professional Data Engineer, 2024]
+*(Boundary Note: In accordance with strict factual profile guidelines, no specific institution, graduation year, GPA, or academic honors are inferred or fabricated).*
 
-## Courses & Self-Study
-- [e.g. Frontend Masters: Complete Intro to React v8, 2024]
+---
+
+## Certifications & Accreditations
+- **Formal Industry Certifications:** None claimed or verified in current repository records.
+
+---
+
+## Self-Directed Study & Continuous Engineering Learning
+Adesh engages in dedicated, self-directed technical study focused on modern frontend engineering, web architecture, and applied artificial intelligence. Key areas of deep independent study include:
+
+- **Advanced Frontend Engineering:**
+  - Modern JavaScript semantics (ES6+, Promises, event loop, microtasks vs. macrotasks, memory management)
+  - React internal architecture (fiber reconciliation, hooks rules, state colocation, render cycles)
+  - Web performance optimization (Critical Rendering Path, Core Web Vitals—LCP, FID/INP, CLS, resource bundling and code splitting)
+  - CSS layout engines (CSS Grid, Flexbox, custom properties, specificity hierarchies)
+  - Web security fundamentals (XSS prevention, Content Security Policy, DOMPurify)
+- **Applied LLM & AI Systems:**
+  - Retrieval-Augmented Generation (RAG) design patterns and mathematical BM25 ranking algorithms
+  - Intent classification routing and low-latency LLM guardrails
+  - Token economics, response caching mechanisms, and context window compression
+  - Benchmark evaluation design and prompt regression testing

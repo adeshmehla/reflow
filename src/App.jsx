@@ -25,6 +25,8 @@ export default function App() {
           </button>
           <button
             type="button"
+            disabled
+            style={{ color: "gray" }}
             className={view === "assistant" ? "on" : ""}
             onClick={() => setView("assistant")}
           >

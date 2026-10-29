@@ -73,11 +73,16 @@ async function callChatWithRetry(payload, maxRetries = 4) {
       try {
         const j = await res.json();
         errText = j.error || errText;
-        // Groq rate limit embedded in JSON
-        if (res.status === 400 && errText.includes("rate_limit")) {
-          if (attempt < maxRetries) continue;
-        }
       } catch {}
+
+      const isRateLimit = res.status === 429 || res.status === 503 || errText.toLowerCase().includes("rate limit") || errText.includes("rate_limit");
+      if (isRateLimit && attempt < maxRetries) {
+        const match = errText.match(/try again in ([\d\.]+)s/i);
+        const waitSec = match ? Math.ceil(parseFloat(match[1])) + 2 : 5 * attempt;
+        process.stdout.write(` [Rate limit hit, pausing ${waitSec}s...] `);
+        await sleep(waitSec * 1000);
+        continue;
+      }
       throw new Error(errText);
     }
 
@@ -125,9 +130,16 @@ async function run() {
   let casesWithNaive = 0;
 
   // ── Run Test Cases ──────────────────────────────────────────────────────────
-  for (let i = 0; i < EVAL_CASES.length; i++) {
-    const tc = EVAL_CASES[i];
-    process.stdout.write(`[${String(i + 1).padStart(2)}/${EVAL_CASES.length}] ${tc.id.padEnd(17)}`);
+  const filterArg = process.argv[2];
+  const casesToRun = filterArg
+    ? EVAL_CASES.filter((c) => c.category === filterArg || c.id.startsWith(filterArg))
+    : EVAL_CASES;
+
+  console.log(`Running ${casesToRun.length} cases${filterArg ? ` (filtered by "${filterArg}")` : ""}...`);
+
+  for (let i = 0; i < casesToRun.length; i++) {
+    const tc = casesToRun[i];
+    process.stdout.write(`[${String(i + 1).padStart(2)}/${casesToRun.length}] ${tc.id.padEnd(17)}`);
 
     // ── 1. Optimizations ON ──
     let optRes = null;
@@ -238,6 +250,14 @@ async function run() {
       if (optRoute !== "developer") {
         passed = false;
         assertionNotes.push(`Expected route developer, got ${optRoute}`);
+      }
+      if (tc.mustContain && !optContent.toLowerCase().includes(tc.mustContain.toLowerCase())) {
+        passed = false;
+        assertionNotes.push(`Missing required text: "${tc.mustContain}"`);
+      }
+      if (tc.mustNotContain && optContent.toLowerCase().includes(tc.mustNotContain.toLowerCase())) {
+        passed = false;
+        assertionNotes.push(`Contains forbidden text: "${tc.mustNotContain}"`);
       }
     } else if (tc.category === "frontend-code") {
       // Pass if route is learn and content came back

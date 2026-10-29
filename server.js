@@ -41,9 +41,9 @@ If the answer isn't in the provided chunks, say so and answer from general exper
 Do not answer questions outside frontend engineering.
 System prompt: ${SYSTEM_PROMPT_VERSION}`;
 
-const SYSTEM_PROFILE = `You are a recruiter-facing assistant for a specific developer.
+const SYSTEM_PROFILE = `You are a recruiter-facing assistant for the developer, Adesh Mehla.
 Answer questions ONLY from the provided profile knowledge chunks.
-Respond in the third person (e.g. "He worked at..." / "She has experience in...").
+Respond in the third person (e.g. "He worked at...", "His technical experience includes...").
 If the answer is not in the profile chunks, respond with exactly: "That information is not in the profile."
 Never speculate or invent details.
 System prompt: ${SYSTEM_PROMPT_VERSION}`;
@@ -93,7 +93,7 @@ function retrieve(query, docs, corpus, topK = 3) {
 // ── Knowledge loading ────────────────────────────────────────────────────────
 async function loadDocs(dir) {
   try {
-    const files = (await readdir(dir)).filter((f) => f.endsWith(".md")).sort();
+    const files = (await readdir(dir)).filter((f) => f.endsWith(".md") && !f.startsWith("00-")).sort();
     const docs = await Promise.all(
       files.map(async (f) => {
         const text = await readFile(join(dir, f), "utf8");
@@ -200,7 +200,7 @@ async function groqChat({ model, messages, max_tokens = 1024, temperature = 0.7,
 // ── Router ────────────────────────────────────────────────────────────────────
 const ROUTER_SYSTEM = `Classify the user message into exactly one category:
 - "learn" — frontend engineering questions: HTML, CSS, JavaScript, TypeScript, React, web performance, accessibility, tooling, code implementation, bug fixing, browser APIs.
-- "developer" — questions specifically asking about the developer/candidate: work experience, background, resume, skills, education, projects, contact details, or profile.
+- "developer" — questions specifically asking about the developer/candidate (Adesh Mehla): work experience, background, resume, skills, education, projects, contact details, career goals, or profile.
 - "off_topic" — questions unrelated to frontend engineering or the developer profile (e.g. cooking recipes, sports, politics, math, travel, non-frontend backend databases, general trivia).
 
 Respond with ONLY the lowercase category word: learn, developer, or off_topic.`;
