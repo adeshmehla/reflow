@@ -1,0 +1,24 @@
+# Netlify Configuration for Reflow
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# If you deploy your backend (server.js) to Render, Railway, or Fly.io:
+# Replace https://your-reflow-backend.onrender.com with your backend URL.
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://your-reflow-backend.onrender.com/api/:splat"
+#   status = 200
+#   force = true
+#
+# [[redirects]]
+#   from = "/eval"
+#   to = "https://your-reflow-backend.onrender.com/eval"
+#   status = 200
+#   force = true
+
+# Single Page App (SPA) fallback redirect:
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

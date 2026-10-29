@@ -952,6 +952,18 @@ app.post("/api/assistant", rateLimit, async (req, res) => {
   } catch (e) { res.status(502).json({ error: e.message }); }
 });
 
+// ─── Serve built frontend in production ───────────────────────────────────
+const distPath = join(__dirname, "dist");
+if (existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.use((req, res, next) => {
+    if (req.method !== "GET" || req.path.startsWith("/api") || req.path === "/eval" || req.path === "/RESULTS.md") {
+      return next();
+    }
+    res.sendFile(join(distPath, "index.html"));
+  });
+}
+
 app.listen(PORT, () => {
   console.log(`API on http://localhost:${PORT}${KEY ? "" : "  (GROQ_API_KEY is missing)"}`);
 });

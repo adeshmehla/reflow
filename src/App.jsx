@@ -33,7 +33,7 @@ export default function App() {
             Assistant
           </button>
           <a
-            href="http://localhost:8787/eval"
+            href="/eval"
             target="_blank"
             rel="noreferrer"
             className="app-nav-eval"
