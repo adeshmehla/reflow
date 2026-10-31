@@ -136,27 +136,23 @@ export function ProfileCard({ onSelectPrompt }) {
 export function ProfileNotFoundCard({ onSelectPrompt }) {
   const suggestions = [
     "What are Adesh's technical skills and experience?",
-    "Explain the Plumbline delivery fee calculator project.",
-    "What did Adesh build at WebToday?",
-    "How does his personal Reflow LLM project work?",
+    "What notable projects has Adesh built?",
+    "Explain Adesh's work at WebToday and Optminds.",
   ];
 
   return (
-    <div className="p-4 rounded-[var(--radius-md)] border border-amber-500/30 bg-amber-500/10 text-[var(--text-primary)] space-y-3">
+    <div className="p-3.5 rounded-[var(--radius-md)] border border-amber-500/30 bg-amber-500/10 text-[var(--text-primary)] space-y-2.5">
       <div className="flex items-center gap-2">
-        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
+        <span className="flex items-center justify-center w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold shrink-0">
           !
         </span>
-        <span className="font-semibold text-sm text-amber-300">
+        <span className="font-medium text-xs sm:text-sm text-amber-300">
           That information is not in the profile.
         </span>
       </div>
-      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-        Reflow enforces strict anti-hallucination guardrails and will never guess unverified personal details, private salary expectations, or unrecorded background data.
-      </p>
       <div>
-        <span className="text-[11px] font-semibold text-[var(--text-muted)] block mb-1.5 uppercase tracking-wider">
-          Verified topics you can ask:
+        <span className="text-[10px] font-semibold text-[var(--text-muted)] block mb-1.5 uppercase tracking-wider">
+          Suggested questions:
         </span>
         <div className="flex flex-wrap gap-1.5">
           {suggestions.map((s) => (

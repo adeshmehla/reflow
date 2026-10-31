@@ -265,6 +265,28 @@ async function run() {
         passed = false;
         assertionNotes.push(`Expected route learn, got ${optRoute}`);
       }
+    } else if (tc.category === "job-match") {
+      if (optRoute !== "job_match") {
+        passed = false;
+        assertionNotes.push(`Expected route job_match, got ${optRoute}`);
+      }
+      if (tc.mustContain && !optContent.toLowerCase().includes(tc.mustContain.toLowerCase())) {
+        passed = false;
+        assertionNotes.push(`Missing required text: "${tc.mustContain}"`);
+      }
+      if (tc.mustNotContain && optContent.toLowerCase().includes(tc.mustNotContain.toLowerCase())) {
+        passed = false;
+        assertionNotes.push(`Contains forbidden text: "${tc.mustNotContain}"`);
+      }
+      if (tc.expectedFit) {
+        const fits = Array.isArray(tc.expectedFit) ? tc.expectedFit : [tc.expectedFit];
+        const lower = optContent.toLowerCase();
+        const hasFit = fits.some((f) => lower.includes(f.toLowerCase()));
+        if (!hasFit) {
+          passed = false;
+          assertionNotes.push(`Expected fit ${fits.join(" or ")}, got output: ${optContent.slice(0, 120)}`);
+        }
+      }
     }
 
     if (passed) totalPassed++;

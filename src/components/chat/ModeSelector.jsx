@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, BookOpen, UserCheck } from "lucide-react";
+import { Sparkles, BookOpen, UserCheck, Briefcase } from "lucide-react";
 import { Tooltip } from "../ui/Tooltip.jsx";
 
 export function ModeSelector({ mode = "auto", onChange, className = "" }) {
@@ -24,6 +24,13 @@ export function ModeSelector({ mode = "auto", onChange, className = "" }) {
       icon: UserCheck,
       desc: "Ask about the developer (Adesh Mehla)",
       badgeColor: "text-emerald-400",
+    },
+    {
+      id: "job_match",
+      label: "Job Match",
+      icon: Briefcase,
+      desc: "Compare job descriptions against Adesh's profile",
+      badgeColor: "text-sky-400",
     },
   ];
 

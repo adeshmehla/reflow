@@ -62,6 +62,7 @@ export function ChatInput({
     auto: "Ask a frontend engineering question or about Adesh's profile...",
     learn: "Ask about HTML, CSS, JavaScript, React, web performance, or debugging...",
     developer: "Ask about Adesh Mehla's experience, skills, projects, or background...",
+    job_match: "Paste the job description here...",
   };
 
   const handleKeyDown = (e) => {
@@ -72,6 +73,8 @@ export function ChatInput({
       }
     }
   };
+
+  const isJobMatch = chatMode === "job_match";
 
   return (
     <div className="relative shrink-0 w-full max-w-3xl mx-auto px-4 pb-4 pt-1 z-20">
@@ -97,9 +100,11 @@ export function ChatInput({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholders[chatMode] || placeholders.auto}
-          rows={1}
+          rows={isJobMatch ? 3 : 1}
           disabled={disabled}
-          className="w-full bg-transparent px-4 pt-3.5 pb-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] resize-none focus:outline-none min-h-[48px] max-h-48 leading-relaxed font-sans"
+          className={`w-full bg-transparent px-4 pt-3.5 pb-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] resize-none focus:outline-none ${
+            isJobMatch ? "min-h-[80px]" : "min-h-[48px]"
+          } max-h-48 leading-relaxed font-sans`}
         />
 
         {/* Action Controls Bar */}

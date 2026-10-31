@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Search, Plus, Sparkles, BookOpen, User, Sun, Moon, BarChart3, HelpCircle, X, ArrowRight } from "lucide-react";
+import { Search, Plus, Sparkles, BookOpen, User, Briefcase, Sun, Moon, BarChart3, HelpCircle, X, ArrowRight } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext.jsx";
 
 export function CommandPalette({
@@ -56,6 +56,13 @@ export function CommandPalette({
       category: "Modes",
       icon: User,
       run: () => { onSwitchMode("developer"); onClose(); },
+    },
+    {
+      id: "mode_job_match",
+      label: "Switch to Job Match Mode",
+      category: "Modes",
+      icon: Briefcase,
+      run: () => { onSwitchMode("job_match"); onClose(); },
     },
     {
       id: "toggle_theme",

@@ -46,4 +46,5 @@ export const CHAT_MODES = [
   { value: "auto", label: "Auto" },
   { value: "learn", label: "Learn" },
   { value: "developer", label: "Profile" },
+  { value: "job_match", label: "Job Match" },
 ];

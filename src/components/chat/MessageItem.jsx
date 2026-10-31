@@ -4,9 +4,21 @@ import { Badge } from "../ui/Badge.jsx";
 import { InsightsCard } from "./InsightsCard.jsx";
 import { ProfileNotFoundCard } from "./ProfileCard.jsx";
 import { OffTopicRefusalCard } from "./FriendlyStates.jsx";
+import { JobMatchCard } from "./JobMatchCard.jsx";
 import { TypingDots } from "../ui/Skeleton.jsx";
 import { RotateCw, ThumbsUp, ThumbsDown, FileText, Check, User } from "lucide-react";
 import { useToast } from "../ui/Toast.jsx";
+
+function tryParseJobMatch(text) {
+  if (!text || typeof text !== "string") return null;
+  const clean = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  if (!clean.startsWith("{") || !clean.includes('"requirements"')) return null;
+  try {
+    const obj = JSON.parse(clean);
+    if (obj && Array.isArray(obj.requirements)) return obj;
+  } catch {}
+  return null;
+}
 
 export function MessageItem({
   message,
@@ -43,10 +55,12 @@ export function MessageItem({
   const isGenerating = busy && isLast && !content;
   const isProfileNotFound = content.includes("That information is not in the profile.");
   const isOffTopicRefusal = route === "off_topic" || content.includes("frontend engineering specialist. I can only help with HTML");
+  const jobMatchData = route === "job_match" ? tryParseJobMatch(content) : null;
 
   const routeBadges = {
     learn: { label: "Learn", variant: "learn" },
     developer: { label: "Profile", variant: "profile" },
+    job_match: { label: "Job Match", variant: "job_match" },
     off_topic: { label: "Off-Topic", variant: "off_topic" },
   };
 
@@ -83,6 +97,8 @@ export function MessageItem({
             <ProfileNotFoundCard onSelectPrompt={onSelectPrompt} />
           ) : isOffTopicRefusal ? (
             <OffTopicRefusalCard onSelectPrompt={onSelectPrompt} />
+          ) : jobMatchData ? (
+            <JobMatchCard data={jobMatchData} onCitationClick={onCitationClick} />
           ) : (
             <Markdown text={content} />
           )}
